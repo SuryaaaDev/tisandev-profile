@@ -1,26 +1,138 @@
 @import "tailwindcss";
+@config "../tailwind.config.ts";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant dark (&:where(.dark, .dark *));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  /* --- Font --- */
+  --font-sans: var(--font-plus-jakarta-sans), ui-sans-serif, system-ui, sans-serif;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* --- Tisandev Brand Colors --- */
+  --color-tisandev: #006019;
+  --color-tisandev-light: #008022;
+  --color-tisandev-dark: #004010;
+  --color-tisandev-glow: #10B981;
+
+  /* --- Glass Panel Colors --- */
+  --color-glass-bg: color-mix(in srgb, white 40%, transparent);
+  --color-glass-border: color-mix(in srgb, white 60%, transparent);
+  --color-glass-bg-hover: color-mix(in srgb, white 55%, transparent);
+
+  /* --- Glass Dark Mode --- */
+  --color-glass-dark-bg: color-mix(in srgb, #0f172a 40%, transparent);
+  --color-glass-dark-border: color-mix(in srgb, white 10%, transparent);
+
+  /* --- Liquid Orb Colors --- */
+  --color-orb-primary: color-mix(in srgb, #006019 10%, transparent);
+  --color-orb-primary-dark: color-mix(in srgb, #004010 30%, transparent);
+  --color-orb-glow: color-mix(in srgb, #10B981 15%, transparent);
+  --color-orb-glow-dark: color-mix(in srgb, #006019 20%, transparent);
+
+  /* --- Border Radius --- */
+  --radius-glass: 1.5rem; /* 24px */
+
+  /* --- Shadows --- */
+  --shadow-glass: 0 8px 32px 0 rgba(0, 0, 0, 0.08);
+  --shadow-glass-dark: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
+  --shadow-tisandev: 0 8px 32px 0 rgba(0, 96, 25, 0.2);
+
+  /* --- Backdrop Blur Scale --- */
+  --blur-glass-sm: 8px;
+  --blur-glass-md: 16px;
+  --blur-glass-lg: 32px;
+
+  /* --- Animasi --- */
+  --animate-float: float 8s ease-in-out infinite;
+  --animate-float-slow: float 12s ease-in-out infinite;
+  --animate-fade-in-up: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-fade-in: fadeIn 0.6s ease-out forwards;
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) scale(1); }
+    33%       { transform: translateY(-20px) scale(1.02); }
+    66%       { transform: translateY(10px) scale(0.98); }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  :root { color-scheme: light; }
+  .dark { color-scheme: dark; }
+
+  body {
+    @apply bg-slate-50 text-slate-900 font-sans;
+    @apply dark:bg-slate-950 dark:text-slate-50;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  :target { scroll-margin-top: 5rem; }
+}
+
+@layer components {
+  /* Panel kaca utama */
+  .glass-panel {
+    @apply bg-white/40 dark:bg-slate-900/40;
+    @apply border border-white/60 dark:border-white/10;
+    @apply backdrop-blur-md rounded-3xl;
+    @apply shadow-[var(--shadow-glass)] dark:shadow-[var(--shadow-glass-dark)];
+  }
+
+  /* Tombol CTA utama — gradient tisandev */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl;
+    @apply bg-gradient-to-r from-tisandev to-tisandev-glow;
+    @apply px-6 py-3 text-sm font-semibold text-white;
+    @apply shadow-lg shadow-tisandev/20;
+    @apply transition-all duration-200;
+    @apply hover:from-tisandev-light hover:to-tisandev;
+    @apply hover:shadow-tisandev/30 hover:-translate-y-0.5;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tisandev focus-visible:ring-offset-2;
+  }
+
+  /* Tombol sekunder — glass style */
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl;
+    @apply bg-white/30 dark:bg-white/10;
+    @apply border border-white/60 dark:border-white/20;
+    @apply backdrop-blur-sm px-6 py-3 text-sm font-semibold;
+    @apply text-slate-900 dark:text-slate-100;
+    @apply transition-all duration-200;
+    @apply hover:bg-white/50 dark:hover:bg-white/20 hover:-translate-y-0.5;
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-tisandev focus-visible:ring-offset-2;
+  }
+
+  /* Gradient text — untuk hero heading */
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-tisandev via-tisandev-light to-tisandev-glow;
+  }
+
+  /* Liquid orb — elemen background dekoratif */
+  .liquid-orb {
+    @apply absolute rounded-full blur-3xl pointer-events-none select-none;
+    @apply animate-[var(--animate-float)];
+  }
 }

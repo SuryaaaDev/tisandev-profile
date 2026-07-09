@@ -1,0 +1,35 @@
+/**
+ * Contoh tailwind.config.ts untuk palet warna tisandev
+ * Catatan: Proyek ini menggunakan Tailwind CSS v4 dengan pendekatan CSS-first.
+ * Untuk menggunakan file konfigurasi ini, tambahkan directive berikut di atas @import "tailwindcss":
+ * @config "./tailwind.config.ts"
+ */
+
+import type { Config } from 'tailwindcss'
+
+export default {
+  content: [
+    './app/**/*.{ts,tsx,mdx}',
+    './components/**/*.{ts,tsx,mdx}',
+    './lib/**/*.{ts,tsx,mdx}',
+    './types/**/*.ts',
+  ],
+  theme: {
+    extend: {
+      colors: {
+        tisandev: {
+          DEFAULT: '#005A1C',
+          light: '#007A26',
+          dark: '#004214',
+          glow: '#10B981',
+        },
+      },
+      // Opsional: Tambahkan box shadow kustom untuk efek glow
+      boxShadow: {
+        tisandev: '0 8px 32px 0 rgba(0, 90, 28, 0.2)',
+        'tisandev-lg': '0 12px 48px 0 rgba(0, 90, 28, 0.3)',
+      },
+    },
+  },
+  plugins: [],
+} satisfies Config
