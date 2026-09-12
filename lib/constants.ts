@@ -21,8 +21,8 @@ export const PORTFOLIO_CATEGORIES: { value: PortfolioCategory; label: string }[]
 
 /** Kontak bisnis */
 export const CONTACT = {
-  whatsapp: 'https://wa.me/6281234567890',
-  email: 'hello@tisandev.com',
+  whatsapp: 'https://wa.me/6289502264034',
+  email: 'to be updated',
   instagram: 'https://instagram.com/tisan.dev',
   tiktok: 'https://tiktok.com/@tisandev',
 } as const

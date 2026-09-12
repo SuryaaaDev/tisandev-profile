@@ -1,6 +1,6 @@
 export default function AboutSection() {
   const stats = [
-    { value: '3+', label: 'Tahun Pengalaman' },
+    { value: '4+', label: 'Tahun Pengalaman' },
     { value: '50+', label: 'Proyek Selesai' },
     { value: '30+', label: 'Klien Aktif' },
     { value: '98%', label: 'Tingkat Kepuasan' },

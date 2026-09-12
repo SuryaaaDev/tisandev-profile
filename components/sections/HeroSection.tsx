@@ -95,7 +95,7 @@ export default function HeroSection() {
           {[
             { value: '50+', label: 'Proyek Selesai' },
             { value: '98%', label: 'Klien Puas' },
-            { value: '3 hari', label: 'Rata-rata Respon' },
+            { value: '10 Menit', label: 'Rata-rata Respon' },
           ].map((stat) => (
             <div key={stat.label} className="text-center">
               <p className="text-2xl font-extrabold text-slate-900 dark:text-slate-50">

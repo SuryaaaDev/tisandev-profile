@@ -21,24 +21,42 @@ function EmailIcon() {
   )
 }
 
-type FormStatus = 'idle' | 'sending' | 'success' | 'error'
+type FormStatus = 'idle' | 'success'
 
 export default function ContactSection() {
   const id = useId()
   const [status, setStatus] = useState<FormStatus>('idle')
+  const [errors, setErrors] = useState<{ name?: string; email?: string; message?: string }>({})
   const [form, setForm] = useState({ name: '', email: '', message: '' })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    if (errors[e.target.name]) {
+      setErrors((prev) => ({ ...prev, [e.target.name]: '' }))
+    }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const validate = (): boolean => {
+    const newErrors: { name?: string; email?: string; message?: string } = {}
+    if (!form.name.trim()) newErrors.name = 'Nama Lengkap wajib diisi.'
+    if (!form.email.trim()) newErrors.email = 'Email wajib diisi.'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) newErrors.email = 'Email tidak valid.'
+    if (!form.message.trim()) newErrors.message = 'Pesan wajib diisi.'
+    setErrors(newErrors)
+    return Object.keys(newErrors).length === 0
+  }
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setStatus('sending')
-    // Simulasi pengiriman — ganti dengan API call nyata (Resend, Formspree, dll)
-    await new Promise((res) => setTimeout(res, 1200))
+    if (!validate()) return
+
+    const message = `Halo, saya ${form.name} (${form.email}).%0A%0APesan:%0A${form.message}`
+    const waNumber = CONTACT.whatsapp.replace('https://wa.me/', '')
+    const waUrl = `https://wa.me/${waNumber}?text=${message}`
+    window.open(waUrl, '_blank', 'noopener,noreferrer')
     setStatus('success')
     setForm({ name: '', email: '', message: '' })
+    setErrors({})
   }
 
   const inputClass = 'w-full rounded-xl border border-white/40 dark:border-white/10 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm px-4 py-3 text-sm text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 outline-none transition focus:border-tisandev dark:focus:border-tisandev-light focus:ring-2 focus:ring-tisandev/20'
@@ -82,7 +100,7 @@ export default function ContactSection() {
               </div>
               <div>
                 <p className="font-semibold text-slate-900 dark:text-slate-50">WhatsApp</p>
-                <p className="text-sm text-slate-500 dark:text-slate-400">Respon cepat &lt; 1 jam</p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">Respon cepat &lt; 5 menit</p>
               </div>
             </a>
 
@@ -102,8 +120,8 @@ export default function ContactSection() {
             {/* Info card */}
             <div className="glass-panel p-5">
               <p className="mb-2 font-semibold text-slate-900 dark:text-slate-50">Jam Operasional</p>
-              <p className="text-sm text-slate-600 dark:text-slate-400">Senin – Sabtu</p>
-              <p className="text-sm font-medium text-slate-900 dark:text-slate-200">09:00 – 21:00 WIB</p>
+              <p className="text-sm text-slate-600 dark:text-slate-400">Senin – Minggu</p>
+              <p className="text-sm font-medium text-slate-900 dark:text-slate-200">24 Jam</p>
             </div>
           </div>
 
@@ -121,65 +139,67 @@ export default function ContactSection() {
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} noValidate>
-                <div className="flex flex-col gap-4">
-                  <div>
-                    <label htmlFor={`${id}-name`} className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                      Nama Lengkap <span className="text-red-500" aria-hidden="true">*</span>
-                    </label>
-                    <input
-                      id={`${id}-name`}
-                      name="name"
-                      type="text"
-                      required
-                      autoComplete="name"
-                      placeholder="Ramdan Hakim"
-                      value={form.name}
-                      onChange={handleChange}
-                      className={inputClass}
-                    />
-                  </div>
+<form onSubmit={handleSubmit}>
+                 <div className="flex flex-col gap-4">
+                   <div>
+                     <label htmlFor={`${id}-name`} className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                       Nama Lengkap <span className="text-red-500" aria-hidden="true">*</span>
+                     </label>
+                     <input
+                       id={`${id}-name`}
+                       name="name"
+                       type="text"
+                       required
+                       autoComplete="name"
+                       placeholder="Ramdan Hakim"
+                       value={form.name}
+                       onChange={handleChange}
+                       className={`${inputClass} ${errors.name ? 'border-red-500 focus:ring-red-500/20' : ''}`}
+                     />
+                     {errors.name && <p className="mt-1 text-xs text-red-500">{errors.name}</p>}
+                   </div>
 
-                  <div>
-                    <label htmlFor={`${id}-email`} className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                      Email <span className="text-red-500" aria-hidden="true">*</span>
-                    </label>
-                    <input
-                      id={`${id}-email`}
-                      name="email"
-                      type="email"
-                      required
-                      autoComplete="email"
-                      placeholder="ramdan@mail.com"
-                      value={form.email}
-                      onChange={handleChange}
-                      className={inputClass}
-                    />
-                  </div>
+                   <div>
+                     <label htmlFor={`${id}-email`} className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                       Email <span className="text-red-500" aria-hidden="true">*</span>
+                     </label>
+                     <input
+                       id={`${id}-email`}
+                       name="email"
+                       type="email"
+                       required
+                       autoComplete="email"
+                       placeholder="ramdan@mail.com"
+                       value={form.email}
+                       onChange={handleChange}
+                       className={`${inputClass} ${errors.email ? 'border-red-500 focus:ring-red-500/20' : ''}`}
+                     />
+                     {errors.email && <p className="mt-1 text-xs text-red-500">{errors.email}</p>}
+                   </div>
 
-                  <div>
-                    <label htmlFor={`${id}-message`} className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
-                      Ceritakan Proyek Anda <span className="text-red-500" aria-hidden="true">*</span>
-                    </label>
-                    <textarea
-                      id={`${id}-message`}
-                      name="message"
-                      required
-                      rows={5}
-                      placeholder="Saya butuh website untuk bisnis saya di bidang..."
-                      value={form.message}
-                      onChange={handleChange}
-                      className={`${inputClass} resize-none`}
-                    />
-                  </div>
+                   <div>
+                     <label htmlFor={`${id}-message`} className="mb-1.5 block text-sm font-medium text-slate-700 dark:text-slate-300">
+                       Ceritakan Proyek Anda <span className="text-red-500" aria-hidden="true">*</span>
+                     </label>
+                     <textarea
+                       id={`${id}-message`}
+                       name="message"
+                       required
+                       rows={5}
+                       placeholder="Saya butuh website untuk bisnis saya di bidang..."
+                       value={form.message}
+                       onChange={handleChange}
+                       className={`${inputClass} resize-none ${errors.message ? 'border-red-500 focus:ring-red-500/20' : ''}`}
+                     />
+                     {errors.message && <p className="mt-1 text-xs text-red-500">{errors.message}</p>}
+                   </div>
 
-                  <button
-                    type="submit"
-                    disabled={status === 'sending'}
-                    className="btn-primary w-full py-3.5 text-base disabled:opacity-60 disabled:cursor-not-allowed"
-                  >
-                    {status === 'sending' ? 'Mengirim...' : 'Kirim Pesan'}
-                  </button>
+<button
+                     type="submit"
+                     className="btn-primary w-full py-3.5 text-base"
+                   >
+                      Kirim Pesan
+                   </button>
                 </div>
               </form>
             )}
