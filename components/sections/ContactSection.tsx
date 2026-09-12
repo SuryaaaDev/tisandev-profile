@@ -30,9 +30,10 @@ export default function ContactSection() {
   const [form, setForm] = useState({ name: '', email: '', message: '' })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const field = e.target.name as keyof typeof errors
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-    if (errors[e.target.name]) {
-      setErrors((prev) => ({ ...prev, [e.target.name]: '' }))
+    if (errors[field]) {
+      setErrors((prev) => ({ ...prev, [field]: '' }))
     }
   }
 
